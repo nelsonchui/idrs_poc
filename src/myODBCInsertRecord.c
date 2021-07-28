@@ -104,7 +104,7 @@ int main() {
 // From this part onward is the SQLExecution.
 
 // Step 1 - Allocate statement handle
-// printf("Allocate statement handle\n");
+printf("Allocate statement handle\n");
 rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
 if (rc != SQL_SUCCESS) {
     printf("SQLAllocHandle() Return code: %i\n", rc);
