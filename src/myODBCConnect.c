@@ -53,7 +53,7 @@ void main() {
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
   if (SQL_SUCCEEDED(ret)) {
-    printf("\nConnected\n\n");
+    printf("\nDatabase is connected\n\n");
     printf("Returned connection string was:\n%s\n", outstr);
     if (ret == SQL_SUCCESS_WITH_INFO) {
       printf("Driver reported the following diagnostics\n");
@@ -61,7 +61,7 @@ void main() {
     }
     SQLDisconnect(dbc);               /* disconnect from driver */
   } else {
-    fprintf(stderr, "Failed to connect\n");
+    fprintf(stderr, "\nFailed to connect\n");
     extract_error("SQLDriverConnect", dbc, SQL_HANDLE_DBC);
   }
 
