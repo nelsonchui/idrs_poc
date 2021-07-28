@@ -86,7 +86,7 @@ int main() {
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
   if (SQL_SUCCEEDED(rc)) {
-    printf("\nConnected\n\n");
+    printf("\nDatabase is connected\n\n");
     printf("Returned connection string was:\n%s\n", outstr);
     if (rc == SQL_SUCCESS_WITH_INFO) {
       printf("Driver reported the following diagnostics\n");
@@ -115,7 +115,7 @@ if (rc != SQL_SUCCESS) {
 
 // Step 2 - Execute statement
 char sqlStatement[256] = "DELETE FROM customers WHERE CustomerID = 4";
-printf("Execute SQL statement : %s \n", &sqlStatement);
+printf("\nExecute SQL statement : %s \n", &sqlStatement);
 rc = SQLExecDirect(hstmt, sqlStatement, SQL_NTS); 
 
 if (rc != SQL_SUCCESS) {
