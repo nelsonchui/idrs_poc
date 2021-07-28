@@ -50,14 +50,12 @@ int main() {
   SQLHENV henv;
   SQLHDBC hdbc;
   SQLHSTMT hstmt;
-  SQLRETURN ret; /* ODBC API return status */
-  SQLRETURN retcode; /* ODBC API return status */
+  SQLRETURN rc; /* ODBC API return status */
   SQLCHAR outstr[1024];
   SQLSMALLINT outstrlen;
-  
-  SQLRETURN rc;
 
   SQLINTEGER colNo;
+  SQLLEN  rowCount;
 
   SQLUINTEGER CustomerID;
   SQLCHAR FirstName[LASTNAME_LEN];
@@ -66,7 +64,7 @@ int main() {
   SQLCHAR City[CITY_LEN];
   SQLLEN siCustomerID, siFirstName, siLastName, siAddress, siCity;
 
-  // return code values
+  // Return code values
   printf("\nSQL_SUCCESS: %i\n", SQL_SUCCESS);
   printf("SQL_SUCCESS_WITH_INFO: %i\n", SQL_SUCCESS_WITH_INFO);
   printf("SQL_ERROR: %i\n", SQL_ERROR);
@@ -84,13 +82,13 @@ int main() {
   /* Allocate a connection handle */
   SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
   /* Connect to the DSN mydsn */
-  ret = SQLDriverConnect(hdbc, NULL, "DSN=PostgreDemoDB;", SQL_NTS,
+  rc = SQLDriverConnect(hdbc, NULL, "DSN=PostgreDemoDB;", SQL_NTS,
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
-  if (SQL_SUCCEEDED(ret)) {
+  if (SQL_SUCCEEDED(rc)) {
     printf("\nConnected\n\n");
     printf("Returned connection string was:\n%s\n", outstr);
-    if (ret == SQL_SUCCESS_WITH_INFO) {
+    if (rc == SQL_SUCCESS_WITH_INFO) {
       printf("Driver reported the following diagnostics\n");
       extract_error("SQLDriverConnect", hdbc, SQL_HANDLE_DBC);
     }
@@ -115,58 +113,29 @@ if (rc != SQL_SUCCESS) {
 }
 
 // Step 2 - Execute statement
-char sqlStatement[256] = "SELECT * FROM customers";
+char sqlStatement[256] = "Insert into customers values (4, 'Cust4_lastname', 'Cust4_firstname', 'Address_993', 'London')";
 printf("Execute SQL statement : %s \n\n", &sqlStatement);
 rc = SQLExecDirect(hstmt, sqlStatement, SQL_NTS); 
-
 if (rc != SQL_SUCCESS) {
     printf("SQLExecDirect() Return code: %i\n", rc);
     extract_error("SQLExecDirect(hstmt)", hstmt, SQL_HANDLE_STMT);
     goto exit;
 }
 
-// Step 3 - Fetch and display the customer data. Code to check if rc equals 
- 
-while ((rc = SQLFetch(hstmt)) != SQL_NO_DATA && rc!= SQL_ERROR) { 
-//while (rc == SQL_SUCCESS) { 
-    
-   // Display the customer data. Code not shown. 
-    memset (FirstName, ' ', FIRSTNAME_LEN);
-	memset (LastName, ' ', LASTNAME_LEN);
-	memset (Address, ' ', ADDRESS_LEN);
-	memset (City, ' ', CITY_LEN);
+rc = SQLRowCount(hstmt, &rowCount);
+if (rc != SQL_SUCCESS) {
+    printf("SQLRowCount() Return code: %i\n", rc);
+    extract_error("SQLRowCount(hstmt)", hstmt, SQL_HANDLE_STMT);
+    goto exit;
+}
+printf ("%i row(s) inserted.\n", rowCount);
 
-    colNo=1;
-
-    // Get record data into variables
-    rc = SQLGetData(hstmt, colNo++, SQL_C_ULONG,
-                                    &CustomerID, 0, &siCustomerID);
-    rc = SQLGetData(hstmt, colNo++, SQL_C_CHAR,
-                                    FirstName, FIRSTNAME_LEN, &siFirstName);
-    rc = SQLGetData(hstmt, colNo++, SQL_C_CHAR,
-                                    LastName, LASTNAME_LEN, &siLastName);
-    rc = SQLGetData(hstmt, colNo++, SQL_C_CHAR,
-                                    Address, ADDRESS_LEN, &siAddress);
-	  rc = SQLGetData(hstmt, colNo++, SQL_C_CHAR,
-                                    City, CITY_LEN, &siCity);
-    if (rc == SQL_ERROR) {
-        printf("SQLGetData() Return code: %i\n", rc);
-        extract_error("SQLGetData(hstmt)", hstmt, SQL_HANDLE_STMT);
-        goto exit;
-    }
-    // Print the record
-    printf("%i, %.10s, %.10s, %.10s, %.10s\n",
-        CustomerID, FirstName, LastName, Address, City);
-
-    
-} 
-
-  printf ("\nCompleted.\n");
+printf ("\nCompleted.\n");
 
 
 exit:
   // Close the customer result set. 
-  SQLCloseCursor(hstmt);         
+  SQLCloseCursor(hstmt); 
 
   /* free up allocated handles */
   // Statement

@@ -53,8 +53,8 @@ void main() {
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
   if (SQL_SUCCEEDED(ret)) {
-    printf("Connected\n");
-    printf("Returned connection string was:\n\t%s\n", outstr);
+    printf("\nConnected\n\n");
+    printf("Returned connection string was:\n%s\n", outstr);
     if (ret == SQL_SUCCESS_WITH_INFO) {
       printf("Driver reported the following diagnostics\n");
       extract_error("SQLDriverConnect", dbc, SQL_HANDLE_DBC);
@@ -64,7 +64,16 @@ void main() {
     fprintf(stderr, "Failed to connect\n");
     extract_error("SQLDriverConnect", dbc, SQL_HANDLE_DBC);
   }
+
+exit:
   /* free up allocated handles */
-  SQLFreeHandle(SQL_HANDLE_DBC, dbc);
-  SQLFreeHandle(SQL_HANDLE_ENV, env);
+  // Connection
+  if (dbc != SQL_NULL_HDBC) {
+      SQLDisconnect(dbc);
+      SQLFreeHandle(SQL_HANDLE_DBC, dbc);
+  }
+  // Environment
+  if (env != SQL_NULL_HENV)
+      SQLFreeHandle(SQL_HANDLE_ENV, env);
+
 }
