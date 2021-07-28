@@ -86,7 +86,7 @@ int main() {
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
   if (SQL_SUCCEEDED(rc)) {
-    printf("\nConnected\n\n");
+    printf("\nDatabase Connected\n\n");
     printf("Returned connection string was:\n%s\n", outstr);
     if (rc == SQL_SUCCESS_WITH_INFO) {
       printf("Driver reported the following diagnostics\n");
@@ -104,7 +104,7 @@ int main() {
 // From this part onward is the SQLExecution.
 
 // Step 1 - Allocate statement handle
-printf("Allocate statement handle\n");
+// printf("Allocate statement handle\n");
 rc = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
 if (rc != SQL_SUCCESS) {
     printf("SQLAllocHandle() Return code: %i\n", rc);
@@ -114,7 +114,7 @@ if (rc != SQL_SUCCESS) {
 
 // Step 2 - Execute statement
 char sqlStatement[256] = "Insert into customers values (4, 'Cust4_lastname', 'Cust4_firstname', 'Address_993', 'London')";
-printf("Execute SQL statement : %s \n\n", &sqlStatement);
+printf("\nExecute SQL statement : %s \n\n", &sqlStatement);
 rc = SQLExecDirect(hstmt, sqlStatement, SQL_NTS); 
 if (rc != SQL_SUCCESS) {
     printf("SQLExecDirect() Return code: %i\n", rc);
