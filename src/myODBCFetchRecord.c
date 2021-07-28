@@ -88,7 +88,7 @@ int main() {
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
   if (SQL_SUCCEEDED(ret)) {
-    printf("\nConnected\n\n");
+    printf("\nDatabase is connected\n\n");
     printf("Returned connection string was:\n%s\n", outstr);
     if (ret == SQL_SUCCESS_WITH_INFO) {
       printf("Driver reported the following diagnostics\n");
@@ -96,7 +96,7 @@ int main() {
     }
 
   } else {
-    fprintf(stderr, "Failed to connect\n");
+    fprintf(stderr, "\nFailed to connect\n");
     extract_error("SQLDriverConnect", hdbc, SQL_HANDLE_DBC);
     goto exit;
   }
@@ -116,7 +116,7 @@ if (rc != SQL_SUCCESS) {
 
 // Step 2 - Execute statement
 char sqlStatement[256] = "SELECT * FROM customers";
-printf("Execute SQL statement : %s \n\n", &sqlStatement);
+printf("\nExecute SQL statement : %s \n\n", &sqlStatement);
 rc = SQLExecDirect(hstmt, sqlStatement, SQL_NTS); 
 
 if (rc != SQL_SUCCESS) {
