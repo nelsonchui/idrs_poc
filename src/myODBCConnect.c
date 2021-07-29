@@ -53,6 +53,7 @@ void main() {
                          outstr, sizeof(outstr), &outstrlen,
                          SQL_DRIVER_COMPLETE);
   if (SQL_SUCCEEDED(ret)) {
+    printf("\nMessage before connection\n\n");
     printf("\nDatabase is connected\n\n");
     printf("Returned connection string was:\n%s\n", outstr);
     if (ret == SQL_SUCCESS_WITH_INFO) {
